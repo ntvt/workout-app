@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🤰 Pregnancy Workout Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sage:#7B9E87;--sage-light:#A8C4B0;--sage-pale:#EBF2ED;
+    --blush:#E8B4A0;--blush-light:#F5D5C8;--blush-pale:#FDF0EB;
+    --navy:#2C3E5C;--navy-mid:#4A607A;
+    --cream:#FAF7F2;--warm-white:#FFFEFB;
+    --text:#2C2C2C;--text-light:#6B6B6B;
+    --green:#5A8A6A;--red:#C0392B;--amber:#D4870A;
+    --border:#E8E2D9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;font-size:14px;}
+
+  .header{background:var(--navy);padding:20px 16px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(44,62,92,.3);}
+  .header-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--cream);letter-spacing:.3px;}
+  .header-subtitle{font-size:11px;color:var(--sage-light);margin-top:3px;font-weight:300;letter-spacing:1px;text-transform:uppercase;}
+
+  /* PROGRESS BAR */
+  .workout-progress{padding:10px 16px;background:var(--warm-white);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .progress-bar-wrap{flex:1;height:8px;background:var(--border);border-radius:50px;overflow:hidden;}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--sage),var(--sage-light));border-radius:50px;transition:width .4s ease;}
+  .progress-label{font-size:11px;color:var(--text-light);white-space:nowrap;font-weight:500;}
+  .reset-btn{font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:50px;background:var(--cream);color:var(--text-light);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+  .reset-btn:hover{border-color:var(--red);color:var(--red);}
+
+  .search-bar{padding:12px 16px;background:var(--warm-white);border-bottom:1px solid var(--border);position:sticky;top:102px;z-index:99;}
+  .search-input{width:100%;padding:10px 14px 10px 36px;border:1.5px solid var(--border);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--cream);color:var(--text);outline:none;transition:border-color .2s;}
+  .search-input:focus{border-color:var(--sage);}
+  .search-wrap{position:relative;}
+  .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:14px;}
+
+  .tabs{display:flex;overflow-x:auto;background:var(--warm-white);border-bottom:2px solid var(--border);padding:0 8px;scrollbar-width:none;position:sticky;top:152px;z-index:98;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex-shrink:0;padding:12px 14px;font-size:12px;font-weight:500;color:var(--text-light);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;}
+  .tab.active{color:var(--navy);border-bottom-color:var(--sage);font-weight:600;}
+  .tab:hover:not(.active){color:var(--navy-mid);}
+
+  .content{padding:16px;max-width:900px;margin:0 auto;}
+  .section{display:none;animation:fadeIn .3s ease;}
+  .section.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+  .card{background:var(--warm-white);border-radius:16px;padding:16px;margin-bottom:16px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.04);transition:border-color .3s;}
+  .card.card-done{border-color:var(--sage);background:#F6FBF8;}
+  .card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+  .card-title{font-family:'DM Serif Display',serif;font-size:17px;color:var(--navy);}
+  .card-badge{margin-left:auto;font-size:10px;font-weight:600;padding:3px 10px;border-radius:50px;text-transform:uppercase;letter-spacing:.5px;}
+  .badge-sage{background:var(--sage-pale);color:var(--green);}
+  .badge-blush{background:var(--blush-pale);color:#B05A3A;}
+  .badge-navy{background:#E8EDF5;color:var(--navy);}
+
+  /* EXERCISE ROW */
+  .ex-row{border-bottom:1px solid var(--border);}
+  .ex-row:last-child{border-bottom:none;}
+  .ex-row.ex-done{background:#F6FBF8;}
+  .ex-row.ex-done .ex-name{color:var(--green);text-decoration:line-through;text-decoration-color:var(--sage-light);}
+
+  .ex-summary{display:flex;align-items:center;gap:10px;padding:11px 0;cursor:pointer;user-select:none;}
+  .ex-summary:hover .ex-name{color:var(--sage);}
+  .ex-chevron{font-size:11px;color:var(--text-light);transition:transform .25s;flex-shrink:0;}
+  .ex-row.open .ex-chevron{transform:rotate(180deg);}
+
+  /* DONE CHECKMARK */
+  .ex-done-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;cursor:pointer;transition:all .2s;background:var(--warm-white);}
+  .ex-done-check:hover{border-color:var(--sage);}
+  .ex-done-check.checked{background:var(--sage);border-color:var(--sage);color:white;}
+
+  .ex-name-block{flex:1;min-width:0;}
+  .ex-name{font-weight:600;font-size:13px;color:var(--navy);transition:color .2s;}
+  .ex-inline-meta{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;align-items:center;}
+  .detail-chip{font-size:11px;padding:3px 8px;border-radius:50px;font-weight:500;white-space:nowrap;}
+  .chip-weight{background:#E8EDF5;color:var(--navy);}
+  .chip-reps{background:var(--sage-pale);color:var(--green);}
+  .chip-sets{background:#F0EBF8;color:#6B4C9A;}
+  .chip-hold{background:var(--blush-pale);color:#B05A3A;}
+
+  /* SET TRACKER DOTS */
+  .set-dots{display:flex;gap:4px;align-items:center;flex-wrap:wrap;}
+  .set-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);background:var(--warm-white);cursor:pointer;transition:all .2s;flex-shrink:0;}
+  .set-dot.done{background:var(--sage);border-color:var(--sage);}
+  .set-dot.active{border-color:var(--sage);background:var(--sage-pale);box-shadow:0 0 0 2px rgba(123,158,135,.3);}
+  .set-dot:hover{border-color:var(--sage);}
+  .set-count-label{font-size:11px;color:var(--text-light);font-weight:600;margin-left:2px;}
+
+  /* Expanded stats */
+  .ex-stats-bar{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;background:var(--cream);border-radius:10px;margin-bottom:12px;border:1px solid var(--border);}
+  .stat-block{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:52px;}
+  .stat-icon{font-size:16px;}
+  .stat-val{font-weight:700;font-size:13px;color:var(--navy);}
+  .stat-lbl{font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;}
+
+  .ex-detail{display:none;padding:0 0 14px 0;animation:slideDown .2s ease;}
+  .ex-row.open .ex-detail{display:block;}
+  @keyframes slideDown{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+  .detail-section{margin-bottom:10px;}
+  .detail-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:5px;}
+
+  .steps-list{list-style:none;display:flex;flex-direction:column;gap:5px;}
+  .step-item{display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.5;color:var(--text);}
+  .step-num{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+
+  .breath-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .breath-chip{font-size:11px;padding:4px 10px;border-radius:6px;display:flex;align-items:center;gap:4px;}
+  .inhale{background:#E3F0FF;color:#2E6DB4;}
+  .exhale{background:#E8F5E9;color:#2E7D32;}
+
+  .mod-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .mod-easier{font-size:11px;padding:3px 8px;background:#F0FFF0;color:#2E7D32;border-radius:6px;border-left:3px solid #4CAF50;}
+  .mod-harder{font-size:11px;padding:3px 8px;background:#FFF5F5;color:var(--red);border-radius:6px;border-left:3px solid #EF5350;}
+
+  /* REST TIMER BUTTON */
+  .rest-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 14px;background:var(--navy);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s;}
+  .rest-btn:hover{background:var(--navy-mid);}
+  .rest-btn.active-timer{background:var(--red);}
+
+  /* COMPLETE SET BUTTON */
+  .complete-set-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;margin-left:8px;padding:8px 14px;background:var(--sage);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s;}
+  .complete-set-btn:hover{background:var(--green);}
+  .complete-set-btn:disabled{background:var(--border);color:var(--text-light);cursor:not-allowed;}
+
+  /* FLOATING TIMER */
+  .timer-overlay{position:fixed;bottom:24px;right:16px;z-index:999;pointer-events:none;}
+  .timer-pill{background:var(--navy);color:#fff;border-radius:20px;padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 24px rgba(44,62,92,.4);pointer-events:all;transform:translateY(120px);opacity:0;transition:transform .3s ease,opacity .3s ease;max-width:320px;}
+  .timer-pill.visible{transform:translateY(0);opacity:1;}
+  .timer-left{flex:1;min-width:0;}
+  .timer-ex-name{font-size:10px;color:var(--sage-light);font-weight:600;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
+  .timer-set-info{font-size:11px;color:#fff;font-weight:600;margin-bottom:4px;}
+  .timer-label{font-size:11px;color:var(--sage-light);font-weight:500;}
+  .timer-preset-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;}
+  .timer-preset{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:50px;padding:3px 8px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;}
+  .timer-preset:hover{background:rgba(255,255,255,.2);}
+  .timer-preset.selected{background:var(--sage);border-color:var(--sage);}
+  .timer-middle{text-align:center;}
+  .timer-ring{position:relative;width:44px;height:44px;flex-shrink:0;}
+  .timer-svg{transform:rotate(-90deg);}
+  .timer-bg{fill:none;stroke:rgba(255,255,255,.15);stroke-width:3;}
+  .timer-fg{fill:none;stroke:var(--sage-light);stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset .9s linear,stroke .3s;}
+  .timer-fg.urgent{stroke:#FF6B6B;}
+  .timer-count{font-family:'DM Serif Display',serif;font-size:24px;line-height:1;color:#fff;min-width:48px;text-align:center;margin-top:2px;}
+  .timer-count.urgent{color:#FF6B6B;}
+  .timer-close{background:rgba(255,255,255,.12);border:none;color:#fff;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;align-self:flex-start;}
+  .timer-close:hover{background:rgba(255,255,255,.25);}
+
+  /* TOAST */
+  .toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-80px);z-index:9999;background:var(--navy);color:#fff;padding:10px 20px;border-radius:50px;font-size:13px;font-weight:600;white-space:nowrap;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .35s;opacity:0;pointer-events:none;}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+  .toast.success{background:var(--green);}
+  .toast.done-all{background:#7B4EA0;}
+
+  /* SCHEDULE */
+  .schedule-grid{display:flex;flex-direction:column;gap:8px;}
+  .schedule-row{display:grid;grid-template-columns:80px 1fr;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--cream);border:1px solid var(--border);}
+  .schedule-day{font-weight:700;font-size:12px;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;}
+  .schedule-activities{display:flex;flex-direction:column;gap:3px;}
+  .schedule-pill{font-size:11px;padding:2px 8px;border-radius:50px;display:inline-block;width:fit-content;}
+  .pill-morning{background:var(--sage-pale);color:var(--green);}
+  .pill-evening{background:#E3F0FF;color:#2E6DB4;}
+  .pill-rest{background:#FFF3E0;color:#E65100;}
+
+  /* BAND GUIDE */
+  .band-grid{display:flex;flex-direction:column;gap:8px;}
+  .band-row{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--cream);border:1px solid var(--border);}
+  .band-label{font-weight:600;font-size:12px;padding:4px 10px;border-radius:50px;text-align:center;}
+  .band-green{background:#E8F5E9;color:#2E7D32;}
+  .band-blue{background:#E3F0FF;color:#1565C0;}
+  .band-black{background:#ECEFF1;color:#37474F;}
+  .band-yellow{background:#FFF8E1;color:#F57F17;}
+  .band-red{background:#FFEBEE;color:#C62828;}
+  .band-pink{background:#FCE4EC;color:#880E4F;}
+  .band-purple{background:#F3E5F5;color:#6A1B9A;}
+  .band-desc{font-size:12px;color:var(--text-light);}
+  .band-use{font-size:12px;font-weight:500;color:var(--text);}
+
+  /* RULES */
+  .rules-grid{display:flex;flex-direction:column;gap:8px;}
+  .rule-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;background:var(--cream);border:1px solid var(--border);}
+  .rule-icon{font-size:18px;flex-shrink:0;}
+  .rule-text{font-size:12px;}
+  .rule-title{font-weight:600;color:var(--navy);margin-bottom:2px;}
+  .rule-desc{color:var(--text-light);}
+  .stop-row{padding:10px 12px;border-radius:10px;border-left:4px solid var(--red);background:#FFF5F5;margin-bottom:8px;}
+  .stop-title{font-weight:600;font-size:12px;color:var(--red);}
+  .stop-desc{font-size:11px;color:#666;margin-top:2px;}
+
+  /* TRIMESTER */
+  .trimester-card{border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--border);}
+  .tri-now{background:#E8F5E9;border-color:#A5D6A7;}
+  .trimester-card:last-child{margin-bottom:0;}
+  .tri-header{font-weight:700;font-size:13px;margin-bottom:6px;}
+  .tri-body{font-size:12px;color:var(--text-light);line-height:1.6;}
+
+  /* MUSCLE TABLE */
+  .muscle-grid{display:flex;flex-direction:column;gap:6px;}
+  .muscle-row{display:grid;grid-template-columns:140px 80px 60px 1fr;gap:8px;padding:8px 10px;border-radius:8px;background:var(--cream);border:1px solid var(--border);align-items:center;font-size:11px;}
+  .muscle-name{font-weight:600;font-size:12px;color:var(--navy);}
+  .coverage-excellent{color:var(--green);font-weight:600;}
+  .coverage-good{color:var(--amber);font-weight:600;}
+  .muscle-freq{color:var(--text-light);}
+  .muscle-ex{color:var(--text-light);}
+
+  /* TIMING */
+  .timing-grid{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;}
+  .timing-row{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;border-radius:8px;background:var(--cream);border:1px solid var(--border);font-size:12px;}
+  .timing-row.total{background:var(--navy);color:white;font-weight:700;border-color:var(--navy);}
+  .timing-phase{font-weight:500;}
+  .timing-dur{color:var(--sage);font-weight:600;}
+  .timing-row.total .timing-dur{color:var(--sage-light);}
+
+  .hidden-search{display:none!important;}
+  .section-label{font-family:'DM Serif Display',serif;font-size:20px;color:var(--navy);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--sage-pale);display:flex;align-items:center;gap:8px;}
+  .warning-banner{background:#FFF8E1;border:1px solid #FFE082;border-left:4px solid var(--amber);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:#5D4037;}
+  .warning-banner strong{color:var(--amber);}
+
+  @media(max-width:480px){
+    .muscle-row{grid-template-columns:1fr 70px;}
+    .muscle-freq,.muscle-ex{display:none;}
+    .timer-pill{max-width:calc(100vw - 32px);}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">🤰 Pregnancy Workout Plan</div>
+  <div class="header-subtitle">16+ Weeks · Transfer 11/25/2025 · Embryo 5AB</div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="workout-progress">
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="progress-label" id="progressLabel">0 / 0 exercises</div>
+  <button class="reset-btn" onclick="resetWorkout()">↺ Reset</button>
+</div>
+
+<div class="search-bar">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" type="text" placeholder="Search exercises, muscles, bands..." id="searchInput" oninput="doSearch()">
+  </div>
+</div>
+
+<div class="tabs" id="tabBar">
+  <div class="tab active" onclick="showTab('schedule',this)">📅 Schedule</div>
+  <div class="tab" onclick="showTab('session1',this)">💪 Core & Glutes</div>
+  <div class="tab" onclick="showTab('session2',this)">🏋️ Upper Body</div>
+  <div class="tab" onclick="showTab('session3',this)">🧘 Yoga/Barre</div>
+  <div class="tab" onclick="showTab('bands',this)">🎽 Bands</div>
+  <div class="tab" onclick="showTab('rules',this)">📋 Rules</div>
+  <div class="tab" onclick="showTab('muscles',this)">💪 Muscles</div>
+</div>
+
+<div class="content">
+
+<!-- SCHEDULE -->
+<div class="section active" id="tab-schedule">
+  <div class="section-label">📅 Weekly Schedule</div>
+  <div class="schedule-grid">
+    <div class="schedule-row"><div class="schedule-day">Monday</div><div class="schedule-activities"><span class="schedule-pill pill-morning">🌅 Yoga + Barre + Pilates (60 min)</span><span class="schedule-pill pill-evening">🏊 Swim (evening)</span></div></div>
+    <div class="schedule-row"><div class="schedule-day">Tuesday</div><div class="schedule-activities"><span class="schedule-pill pill-morning">💪 Core & Glutes KB Workout (65-70 min)</span></div></div>
+    <div class="schedule-row"><div class="schedule-day">Wednesday</div><div class="schedule-activities"><span class="schedule-pill pill-morning">🏋️ Arms + Shoulders + Back + Chest (50-60 min)</span></div></div>
+    <div class="schedule-row"><div class="schedule-day">Thursday</div><div class="schedule-activities"><span class="schedule-pill pill-morning">🌅 Yoga + Barre + Pilates (60 min)</span><span class="schedule-pill pill-evening">🏊 Swim (evening)</span></div></div>
+    <div class="schedule-row"><div class="schedule-day">Friday</div><div class="schedule-activities"><span class="schedule-pill pill-morning">💪 Core & Glutes KB Workout (65-70 min)</span></div></div>
+    <div class="schedule-row"><div class="schedule-day">Saturday</div><div class="schedule-activities"><span class="schedule-pill pill-rest">😴 Full Rest</span></div></div>
+    <div class="schedule-row"><div class="schedule-day">Sunday</div><div class="schedule-activities"><span class="schedule-pill pill-morning">💪 Core & Glutes — Lighter (2 sets)</span><span class="schedule-pill pill-evening">🏊 Swim (evening)</span></div></div>
+  </div>
+  <br>
+  <div class="section-label">📈 Trimester Modifications</div>
+  <div class="trimester-card tri-now"><div class="tri-header" style="color:#2E7D32">✅ Now — 20 Weeks</div><div class="tri-body">Full program as written. All lunges safe with modifications. Monitor balance, exhale on all efforts.</div></div>
+  <div class="trimester-card" style="background:#FFF8E1;border-color:#FFE082"><div class="tri-header" style="color:#F57F17">⚠️ 20–28 Weeks</div><div class="tri-body">Reduce KB weight as needed. More wall support in barre. Widen stances. Reduce lunge depth.</div></div>
+  <div class="trimester-card" style="background:#FFF3E0;border-color:#FFCC80"><div class="tri-header" style="color:#E65100">⚠️ 28–34 Weeks</div><div class="tri-body">Remove Sunday double. Reduce KB to 2x/week. Skip Bulgarian. All standing or all-fours.</div></div>
+  <div class="trimester-card" style="background:#FCE4EC;border-color:#F48FB1"><div class="tri-header" style="color:#C62828">🎯 34–36 Weeks</div><div class="tri-body">Yoga/barre/pilates + walking + swimming only. Very light KB. Deep squat holds priority.</div></div>
+  <div class="trimester-card" style="background:#F3E5F5;border-color:#CE93D8;margin-bottom:0"><div class="tri-header" style="color:#6A1B9A">🎯 36–40 Weeks</div><div class="tri-body">Walking + swimming + deep squat holds + pelvic floor breathing. Rest as much as needed.</div></div>
+</div>
+
+<!-- SESSION 1 -->
+<div class="section" id="tab-session1">
+  <div class="section-label">💪 Core & Glutes KB Workout</div>
+  <div class="timing-grid">
+    <div class="timing-row"><span class="timing-phase">🔥 Warm-Up</span><span class="timing-dur">~5 min</span></div>
+    <div class="timing-row"><span class="timing-phase">💪 Block 1 + rest</span><span class="timing-dur">~10 min</span></div>
+    <div class="timing-row"><span class="timing-phase">🍑 Block 2 + rest</span><span class="timing-dur">~15 min</span></div>
+    <div class="timing-row"><span class="timing-phase">🧍 Block 3 + rest</span><span class="timing-dur">~22 min</span></div>
+    <div class="timing-row"><span class="timing-phase">🌸 Block 4</span><span class="timing-dur">~14 min</span></div>
+    <div class="timing-row"><span class="timing-phase">🧊 Cool Down</span><span class="timing-dur">~7 min</span></div>
+    <div class="timing-row total"><span class="timing-phase">⏱️ Total</span><span class="timing-dur">~65-70 min</span></div>
+  </div>
+  <div class="card" id="card-warmup"><div class="card-header"><div class="card-title">🔥 Warm-Up</div><span class="card-badge badge-sage">1 Round</span></div><div id="warmup-exercises"></div></div>
+  <div class="card" id="card-block1"><div class="card-header"><div class="card-title">💪 Block 1: Anti-Rotation Core</div><span class="card-badge badge-navy">Rest 60-90s · 2-3 min after</span></div><div id="block1-exercises"></div></div>
+  <div class="card" id="card-block2"><div class="card-header"><div class="card-title">🍑 Block 2: Glute & Posterior Chain</div><span class="card-badge badge-navy">Rest 60-90s · 2-3 min after</span></div><div id="block2-exercises"></div></div>
+  <div class="card" id="card-block3"><div class="card-header"><div class="card-title">🧍 Block 3: Standing Core & Stability</div><span class="card-badge badge-navy">Rest 60-90s · 2-3 min after</span></div><div id="block3-exercises"></div></div>
+  <div class="card" id="card-block4"><div class="card-header"><div class="card-title">🌸 Block 4: Pelvic Floor Integration</div><span class="card-badge badge-blush">Key for delivery prep</span></div><div id="block4-exercises"></div></div>
+  <div class="card" id="card-cooldown"><div class="card-header"><div class="card-title">🧊 Cool Down</div><span class="card-badge badge-sage">7 min</span></div><div id="cooldown-exercises"></div></div>
+</div>
+
+<!-- SESSION 2 -->
+<div class="section" id="tab-session2">
+  <div class="section-label">🏋️ Arms, Shoulders, Back & Chest</div>
+  <div class="card" id="card-upper"><div class="card-header"><div class="card-title">🏋️ Wednesday Workout</div><span class="card-badge badge-navy">Rest 60-90s between sets</span></div><div id="upper-exercises"></div></div>
+</div>
+
+<!-- SESSION 3 -->
+<div class="section" id="tab-session3">
+  <div class="section-label">🧘 Yoga + Barre + Pilates</div>
+  <div class="warning-banner">⚠️ <strong>Relaxin Warning:</strong> Stay at 70% of maximum range in ALL stretches.</div>
+  <div class="card" id="card-opening"><div class="card-header"><div class="card-title">🌬️ Opening & Breath</div></div><div id="opening-exercises"></div></div>
+  <div class="card" id="card-sunsal"><div class="card-header"><div class="card-title">🧘 Modified Sun Salutation Flow</div></div><div id="sunsal-exercises"></div></div>
+  <div class="card" id="card-barre"><div class="card-header"><div class="card-title">🦵 Standing Barre Block</div></div><div id="barre-exercises"></div></div>
+  <div class="card" id="card-warrior"><div class="card-header"><div class="card-title">⚔️ Warrior Series</div></div><div id="warrior-exercises"></div></div>
+  <div class="card" id="card-hip"><div class="card-header"><div class="card-title">🌸 Hip Opening & Delivery Prep</div><span class="card-badge badge-blush">🏆 #1 for tear prevention</span></div><div id="hip-exercises"></div></div>
+  <div class="card" id="card-chest"><div class="card-header"><div class="card-title">💪 Chest Opening & Shoulder Blades</div></div><div id="chest-exercises"></div></div>
+  <div class="card" id="card-pilates"><div class="card-header"><div class="card-title">🦵 Pilates Floor Work</div></div><div id="pilates-exercises"></div></div>
+</div>
+
+<!-- BANDS -->
+<div class="section" id="tab-bands">
+  <div class="section-label">🎽 Equipment & Band Guide</div>
+  <div class="card"><div class="card-header"><div class="card-title">🏋️ Kettlebells</div></div><div class="band-grid"><div class="band-row"><span class="band-label band-blue">10 lb KB</span><div><div class="band-use">Isolation work</div><div class="band-desc">Bicep curl, halo, single-arm press, RDL to press, bird-dog, glute bridge</div></div></div><div class="band-row"><span class="band-label band-black">15 lb KB</span><div><div class="band-use">Compound work</div><div class="band-desc">Deadlift, goblet squat, sumo squat, suitcase carry, rows, Bulgarian</div></div></div></div></div>
+  <div class="card"><div class="card-header"><div class="card-title">🟡 Short Loop Bands (WIKDAY)</div></div><div class="band-grid"><div class="band-row"><span class="band-label band-green">💚 Green — Light</span><div><div class="band-use">Ankles & above knees — light</div><div class="band-desc">Clamshell, standing raises, barre pulses, fire hydrant, bird-dog warm-up</div></div></div><div class="band-row"><span class="band-label band-blue">💙 Blue — Medium</span><div><div class="band-use">Above knees — glutes</div><div class="band-desc">Glute bridge, lateral walk, fire hydrant progression, sumo squat</div></div></div><div class="band-row"><span class="band-label band-black">🖤 Black — X-Heavy</span><div><div class="band-use">Above knees — challenging</div><div class="band-desc">Lateral walk progression only</div></div></div></div></div>
+  <div class="card"><div class="card-header"><div class="card-title">🟣 Long Loop Bands (Fitense)</div></div><div class="band-grid"><div class="band-row"><span class="band-label band-pink">🩷 Pink 15-35lb</span><div><div class="band-use">Upper body + bird-dog</div><div class="band-desc">KB press assist, rows, chest press, bird-dog resistance</div></div></div><div class="band-row"><span class="band-label band-purple">💜 Purple 30-60lb</span><div><div class="band-use">Heavy upper body</div><div class="band-desc">Rows, chest press, advanced bird-dog</div></div></div></div></div>
+</div>
+
+<!-- RULES -->
+<div class="section" id="tab-rules">
+  <div class="section-label">📋 Golden Rules & Safety</div>
+  <div class="card"><div class="card-header"><div class="card-title">🌟 Always Apply</div></div><div class="rules-grid"><div class="rule-row"><div class="rule-icon">💨</div><div class="rule-text"><div class="rule-title">Exhale on every exertion</div><div class="rule-desc">Every single rep — non-negotiable for managing intra-abdominal pressure</div></div></div><div class="rule-row"><div class="rule-icon">🚫</div><div class="rule-text"><div class="rule-title">Never hold your breath</div><div class="rule-desc">Instant IAP spike — always avoid Valsalva maneuver</div></div></div><div class="rule-row"><div class="rule-icon">👀</div><div class="rule-text"><div class="rule-title">Watch for doming/coning</div><div class="rule-desc">Stop immediately if midline ridges or cones during any exercise</div></div></div><div class="rule-row"><div class="rule-icon">💧</div><div class="rule-text"><div class="rule-title">Hydrate between every block</div><div class="rule-desc">Drink water — your plasma volume has increased significantly</div></div></div></div></div>
+  <div class="card" style="border-color:#FFCDD2"><div class="card-header" style="border-color:#FFCDD2"><div class="card-title" style="color:var(--red)">🚨 Stop Immediately If</div></div><div class="stop-row"><div class="stop-title">⬇️ Downward pelvic pressure</div></div><div class="stop-row"><div class="stop-title">🔺 Midline doming or coning</div></div><div class="stop-row"><div class="stop-title">😣 Sharp or pinching pain</div></div><div class="stop-row" style="margin-bottom:0"><div class="stop-title">💧 Any leaking — consult PT immediately</div></div></div>
+</div>
+
+<!-- MUSCLES -->
+<div class="section" id="tab-muscles">
+  <div class="section-label">💪 Complete Muscle Coverage</div>
+  <div class="card"><div class="card-header"><div class="card-title">All Muscle Groups</div></div><div class="muscle-grid" id="muscle-grid"></div></div>
+</div>
+
+</div><!-- /content -->
+
+<!-- FLOATING REST TIMER -->
+<div class="timer-overlay">
+  <div class="timer-pill" id="timerPill">
+    <div class="timer-left">
+      <div class="timer-ex-name" id="timerExName">—</div>
+      <div class="timer-set-info" id="timerSetInfo"></div>
+      <div class="timer-label">REST TIMER</div>
+      <div class="timer-preset-row">
+        <button class="timer-preset selected" onclick="setPreset(60,event)">60s</button>
+        <button class="timer-preset" onclick="setPreset(90,event)">90s</button>
+        <button class="timer-preset" onclick="setPreset(120,event)">2m</button>
+        <button class="timer-preset" onclick="setPreset(180,event)">3m</button>
+      </div>
+    </div>
+    <div class="timer-middle">
+      <div class="timer-ring">
+        <svg class="timer-svg" width="44" height="44" viewBox="0 0 44 44">
+          <circle class="timer-bg" cx="22" cy="22" r="18"/>
+          <circle class="timer-fg" id="timerRing" cx="22" cy="22" r="18"/>
+        </svg>
+      </div>
+      <div class="timer-count" id="timerCount">—</div>
+    </div>
+    <button class="timer-close" onclick="closeTimer()">✕</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══ STATE
+const state = {}; // exId -> { completedSets, targetSets, done }
+
+// ═══ DATA
+const exercises = {
+  warmup:[
+    {name:"🐱 Cat-Cow",weight:"BW",hold:"—",reps:"10 breaths",sets:"1",inhale:"Cow — arch back",exhale:"Cat — round back",easier:"Smaller range",harder:"Slower + fuller range",steps:["Start on all fours — wrists under shoulders, knees under hips, spine neutral.","Inhale: gently drop belly toward floor, lift tailbone and chest up (Cow).","Exhale: press hands into floor, round spine toward ceiling, tuck tailbone, chin to chest (Cat).","Move slowly and with breath — each inhale is a Cow, each exhale is a Cat.","Complete 10 full breath cycles, then return to neutral tabletop."]},
+    {name:"🦅 Bird-Dog",weight:"BW",hold:"—",reps:"8 each side",sets:"1",inhale:"Prepare",exhale:"Extend out",easier:"Reduce range",harder:"💚 Green band on wrists",steps:["Start on all fours — wrists under shoulders, knees under hips, neutral spine.","Brace your core gently.","Exhale: simultaneously extend your right arm forward and left leg back. Keep hips level.","Hold for 1 second at the top.","Inhale: slowly return arm and leg to start. Exhale and extend again.","Complete 8 reps each side."]},
+    {name:"🌬️ Diaphragm Breathing",weight:"BW",hold:"—",reps:"10 breaths",sets:"1",inhale:"Expand ribcage 360°",exhale:"Natural release + pelvic floor lift",easier:"—",harder:"Add pelvic floor lift on exhale",steps:["Sit comfortably or lie on your left side.","Place one hand on your ribcage, one on your belly.","Inhale slowly for 4 counts — feel ribcage expand in all directions.","Exhale for 6 counts — let everything release. Gently draw pelvic floor upward.","Repeat 10 full breath cycles."]},
+    {name:"🦵 Glute Bridge",weight:"BW",hold:"—",reps:"10",sets:"1",inhale:"Lower down",exhale:"Lift hips up",easier:"Reduce range",harder:"💙 Blue band above knees",steps:["Lie on back, knees bent, feet flat hip-width apart.","Inhale to prepare. Exhale: press through heels, lift hips to a straight line from knees to shoulders.","Squeeze glutes at top for 1 second.","Inhale: slowly lower hips back to mat.","Repeat 10 reps."]},
+    {name:"🔄 Hip Circles Standing",weight:"BW",hold:"—",reps:"10 each direction",sets:"1",inhale:"Natural",exhale:"Natural",easier:"Hold wall",harder:"Eyes closed",steps:["Stand feet hip-width apart. Hold a wall if needed.","Shift weight to left foot, lift right knee to hip height.","Draw large slow circles with right knee — 10 clockwise, 10 counterclockwise.","Keep standing leg slightly soft.","Switch legs and repeat."]},
+  ],
+  block1:[
+    {name:"🏋️ Suitcase Carry",weight:"15lb KB",hold:"Walking",reps:"20-30 steps/side",sets:"3",inhale:"Natural rhythmic",exhale:"Natural rhythmic",easier:"10lb KB",harder:"🩷 Pink band for resistance",steps:["Hold 15lb KB in right hand at side like a suitcase.","Stand tall — do not lean toward the KB side. Keep shoulders level.","Walk slowly for 20-30 steps, maintaining perfect upright posture.","Set KB down, switch to left hand, repeat.","Rest 60-90 seconds between sets."]},
+    {name:"🏋️ Single-Arm KB Hold",weight:"10lb KB",hold:"30 sec/side",reps:"—",sets:"3",inhale:"Natural",exhale:"Brace gently",easier:"BW",harder:"15lb KB",steps:["Stand feet hip-width, hold 10lb KB in right hand at side.","Maintain perfect posture — both shoulders level, no lean.","Hold for 30 seconds breathing naturally, obliques bracing.","Set KB down, switch sides.","Rest 60-90 seconds between sets."]},
+  ],
+  block2:[
+    {name:"🏋️ KB Deadlift",weight:"15lb KB",hold:"—",reps:"10",sets:"3",inhale:"Hinge down",exhale:"Stand up",easier:"10lb KB",harder:"💙 Blue band above knees",steps:["Stand feet hip-width, KB on floor between feet.","Hinge at hips, keeping spine long and neutral. Soft knees.","Grip KB handle with both hands. Pull shoulder blades back.","Exhale: drive through heels and squeeze glutes to stand.","Inhale: hinge back down slowly. Repeat 10 reps."]},
+    {name:"🏋️ Sumo Squat",weight:"15lb KB",hold:"—",reps:"12",sets:"3",inhale:"Sit down",exhale:"Press up to stand",easier:"10lb KB",harder:"💙 Blue band above knees",steps:["Stand wider than shoulder-width, toes out 30-45°. Hold KB at chest.","Inhale: push knees out and sit hips straight down. Keep chest tall.","Squat until thighs parallel to floor.","Exhale: press through both feet to stand, squeeze glutes.","Repeat 12 reps."]},
+    {name:"⬅️ Reverse Lunge",weight:"BW",hold:"—",reps:"10 each side",sets:"3",inhale:"Step back + lower",exhale:"Press front foot to stand",easier:"Hold wall, reduce depth",harder:"10lb KB goblet hold",steps:["Stand tall feet together. Hold wall if needed.","Take large step backward with right foot, landing on ball of foot.","Inhale as you lower right knee toward floor.","Keep front knee over second toe.","Exhale: drive through front heel to stand. Alternate 10 reps per side."]},
+    {name:"🇧🇬 Bulgarian Split Squat",weight:"BW",hold:"—",reps:"8 each side",sets:"3",inhale:"Lower back knee down",exhale:"Press front foot to stand",easier:"Lower back foot, hold wall",harder:"10lb KB goblet hold",steps:["Stand 2 feet in front of bench. Place top of right foot on bench behind you.","Front left foot flat, knee aligned over toes.","Inhale: bend front knee, lower back knee toward floor.","Go only as deep as comfortable.","Exhale: press through front heel to drive back up. 8 reps then switch."]},
+    {name:"🏋️ Glute Bridge + KB",weight:"10lb KB",hold:"2 sec at top",reps:"12",sets:"3",inhale:"Lower down",exhale:"Drive hips up",easier:"BW",harder:"💙 Blue band + 10lb KB",steps:["Lie on back, knees bent, feet flat. Place 10lb KB across hip creases.","Find neutral pelvis.","Exhale: press through heels, squeeze glutes, drive hips up to straight line.","Hold at top 2 seconds. Do not hyperextend back.","Inhale: lower hips slowly. Repeat 12 reps."]},
+    {name:"🦵 Single-Leg Glute Bridge",weight:"BW",hold:"2 sec at top",reps:"8 each side",sets:"3",inhale:"Lower down",exhale:"Drive hips up",easier:"Both feet down",harder:"💚 Green band above knees",steps:["Lie on back, knees bent, feet flat. Extend right leg straight out.","Exhale: press through left heel, lift hips to form straight line.","Keep hips level. Hold 2 seconds at top.","Inhale: slowly lower back to mat.","8 reps left leg extended, then switch."]},
+    {name:"🦵 Inner Thigh Squeeze",weight:"Block between knees",hold:"2 sec squeeze",reps:"15",sets:"3",inhale:"Prepare",exhale:"Squeeze & hold",easier:"Lighter squeeze",harder:"Add pelvic floor lift",steps:["Lie on back or sit tall. Place yoga block between knees.","Find neutral pelvis.","Exhale: squeeze knees against block with moderate force. Hold 2 seconds.","Inhale: release squeeze fully.","Repeat 15 reps."]},
+  ],
+  block3:[
+    {name:"🏋️ KB Halo",weight:"10lb KB",hold:"—",reps:"6 each direction",sets:"3",inhale:"Front phase",exhale:"Behind head phase",easier:"Smaller circles",harder:"Slower tempo",steps:["Stand feet hip-width. Hold KB by horns, bell up, raised to forehead height.","Keep elbows tucked in close to head.","Move KB in slow controlled circle around head.","Keep torso completely still — only arms move.","6 circles each direction."]},
+    {name:"🏋️ Goblet Squat",weight:"15lb KB",hold:"—",reps:"10",sets:"3",inhale:"Lower down",exhale:"Press up to stand",easier:"10lb KB",harder:"💙 Blue band above knees",steps:["Stand feet shoulder-width, toes out. Hold KB by horns at chest.","Inhale: sit hips back and down, chest tall, KB close to body.","Descend until thighs parallel or comfortable.","Exhale: drive through both heels, squeeze glutes at top.","Repeat 10 reps."]},
+    {name:"🏋️ RDL to Single-Arm Press",weight:"10lb KB",hold:"—",reps:"8 each side",sets:"3",inhale:"Hinge down + lower KB",exhale:"Stand up + press overhead",easier:"Reduce RDL range",harder:"1 sec pause at bottom",steps:["Stand on both feet, hold 10lb KB in right hand.","Inhale: hinge at hip, let KB lower toward floor. Back flat.","Lower until hamstring stretch felt — pause.","Exhale: drive hips forward to stand, simultaneously press KB overhead.","Lower KB to shoulder height. 8 reps right then switch."]},
+    {name:"🏋️ Single-Arm KB Press",weight:"10lb KB",hold:"—",reps:"8 each side",sets:"3",inhale:"Lower to shoulder",exhale:"Press overhead",easier:"BW",harder:"🩷 Pink band underfoot",steps:["Stand feet hip-width. Hold 10lb KB in right hand at shoulder, palm forward.","Engage core gently.","Exhale: press KB straight up overhead. Keep wrist neutral.","Inhale: lower KB slowly to shoulder height.","Keep torso vertical. 8 reps right then switch."]},
+  ],
+  block4:[
+    {name:"🧘 Deep Squat Hold (Malasana)",weight:"Optional 10lb KB",hold:"30-60 sec",reps:"—",sets:"3",inhale:"Pelvic floor releases DOWN",exhale:"Gently lift pelvic floor",easier:"Rolled mat under heels",harder:"Eyes closed, no wall",steps:["Stand wider than hip-width, toes out. Face wall for balance if needed.","Lower into deep squat, hips as close to floor as comfortable.","If heels lift, place rolled mat under them.","Inhale: let pelvic floor release open downward.","Exhale: gently lift pelvic floor upward. Hold 30-60 seconds."]},
+    {name:"🦅 Bird-Dog with Band",weight:"🩷 Pink long band",hold:"2 sec at top",reps:"8 each side",sets:"3",inhale:"Return to tabletop",exhale:"Extend arm & leg out",easier:"BW only",harder:"💜 Purple band",steps:["Anchor pink band at low height. Hold in right hand on all fours.","Wrists under shoulders, knees under hips, neutral spine.","Exhale: extend right arm forward (against resistance) and left leg back. Hips square.","Hold 2 seconds at top.","Inhale: return with control. 8 reps right arm/left leg then switch."]},
+    {name:"🌟 Modified Side Plank Hold",weight:"BW",hold:"20-30 sec/side",reps:"—",sets:"3",inhale:"Prepare",exhale:"Brace + breathe steadily",easier:"Reduce hold time",harder:"Full side plank (before 20 wks only)",steps:["Lie on right side, knees bent 45°, stacked. Support on right forearm.","Lift hips until body is straight line from head to knees.","Keep core gently braced. Breathe continuously.","Hold 20-30 seconds. Lower with control and switch sides.","Stop if midline doming occurs."]},
+    {name:"🌟 Modified Side Plank + Draw",weight:"BW",hold:"—",reps:"10 each side",sets:"3",inhale:"Extend top arm & leg out",exhale:"Draw top arm + leg to meet",easier:"Hold only",harder:"💚 Green band ankles",steps:["Get into modified side plank position.","Extend top arm in front and top leg straight behind.","Inhale: feel the lengthening.","Exhale: draw top elbow and knee toward each other, crunching obliques.","Inhale to re-extend. 10 reps per side."]},
+    {name:"🦵 Clamshell (45°)",weight:"BW",hold:"—",reps:"15 each side",sets:"3",inhale:"Lower knee down",exhale:"Lift knee up",easier:"Smaller range",harder:"💚 Green band above knees",steps:["Lie on right side, hips at 45° flexion, knees stacked and bent.","Feet stay touching throughout.","Exhale: rotate top knee upward — clamshell opening. Keep pelvis stable.","Lift only as high as possible without hips rolling.","Inhale: slowly lower knee back. 15 reps per side."]},
+    {name:"🦵 Side-Lying Adductor Lift",weight:"BW",hold:"—",reps:"15 each side",sets:"3",inhale:"Lower leg",exhale:"Lift bottom leg up",easier:"Reduce height",harder:"💚 Green band ankles",steps:["Lie on right side, body straight. Bend top knee, place foot flat in front.","Keep bottom leg straight, foot flexed.","Exhale: lift right leg straight up, squeezing inner thigh.","Inhale: lower slowly toward floor.","15 reps right side then switch."]},
+    {name:"🦵 Standing Leg Raise",weight:"💚 Green band ankles",hold:"—",reps:"12 each side",sets:"3",inhale:"Lower leg",exhale:"Raise leg up",easier:"BW only",harder:"💙 Blue band",steps:["Stand next to wall, hand lightly on wall for balance.","Green band around both ankles.","Stand on right leg with soft knee.","Exhale: lift left leg straight out to side to hip height. Don't hike hip.","Inhale: slowly lower. 12 reps each side."]},
+    {name:"🩰 Barre Pulse Back/Diagonal",weight:"BW",hold:"—",reps:"20 pulses/side",sets:"3",inhale:"Prepare/lower",exhale:"Lift + each pulse",easier:"Hold wall",harder:"💚 Green band ankles",steps:["Stand at barre or wall, one hand lightly on support.","Extend one leg back at 30-45° diagonal.","Lift the leg slightly off the floor — a few inches.","Exhale with each small upward pulse — 20 rapid lifts per side.","Keep standing leg soft, pelvis neutral, torso upright."]},
+  ],
+  cooldown:[
+    {name:"🧘 Child's Pose (knees wide)",weight:"BW",hold:"2 min",reps:"—",sets:"1",inhale:"Expand into back body",exhale:"Soften deeper",easier:"—",harder:"—",steps:["Kneel, bring big toes to touch, spread knees wide for belly.","Walk hands forward, lower torso between thighs. Forehead on mat.","Breathe deeply into back body, ribs expand sideways.","Exhale: soften hips toward heels.","Hold 2 minutes."]},
+    {name:"🐊 Reclined Twist — Modified",weight:"BW",hold:"45 sec/side",reps:"—",sets:"1",inhale:"Prepare",exhale:"Gentle rotate",easier:"Less rotation",harder:"—",steps:["Lie on back. Draw right knee to chest, keep left leg long.","Guide right knee across body to left. Keep both shoulders down.","Right arm extends to side. Hold 45 seconds.","Return to center slowly, then switch sides.","Avoid deep twists — goal is gentle thoracic rotation."]},
+    {name:"🦋 Reclined Bound Angle",weight:"BW",hold:"2 min",reps:"—",sets:"1",inhale:"Natural",exhale:"Soften inner thighs",easier:"Bolster under knees",harder:"—",steps:["Lie on back. Bring soles of feet together, knees fall open.","Place bolsters under each knee if needed.","Arms at sides, palms up. Release all muscle tension.","Breathe naturally — let gravity open hips.","Hold 2 minutes."]},
+    {name:"🛌 Side-Lying Savasana (LEFT side)",weight:"BW",hold:"3-5 min",reps:"—",sets:"1",inhale:"Natural",exhale:"Natural",easier:"Pillow between knees",harder:"—",steps:["Lie on LEFT side — optimal for circulation.","Place pillow between knees to keep hips aligned.","Close eyes. Let go of all muscular effort.","Breathe naturally.","Remain 3-5 minutes minimum."]},
+  ],
+  upper:[
+    {name:"🏋️ Single-Arm KB Row",weight:"15lb KB",hold:"—",reps:"10 each side",sets:"3",inhale:"Lower KB down",exhale:"Pull KB to hip",easier:"10lb KB",harder:"🩷 Pink band + KB",steps:["Place right hand and knee on bench. Left foot flat, back flat.","Hold 15lb KB in left hand, arm hanging.","Exhale: pull KB up toward left hip — elbow drives up and back.","Hold 1 second at top, squeeze shoulder blade.","Inhale: lower with control. 10 reps then switch."]},
+    {name:"🏋️ Bent-Over Row",weight:"15lb KB",hold:"—",reps:"10",sets:"3",inhale:"Lower down",exhale:"Row up",easier:"10lb KB",harder:"💜 Purple band underfoot",steps:["Stand feet hip-width, hinge at hips 45°. Back flat, soft knees.","Hold KB with both hands, arms hanging.","Exhale: row hands up toward lower ribcage. Squeeze shoulder blades.","Hold 1 second, then lower with control.","Repeat 10 reps."]},
+    {name:"🏋️ KB Lateral Raise",weight:"10lb KB",hold:"1 sec at top",reps:"10 each side",sets:"3",inhale:"Lower",exhale:"Raise to shoulder height",easier:"BW",harder:"🩷 Pink band underfoot",steps:["Stand tall, hold 10lb KB in right hand. Slight elbow bend.","Exhale: raise KB out to side until arm at shoulder height.","Hold 1 second, then inhale and slowly lower.","Do not swing or use momentum.","10 reps right then switch."]},
+    {name:"🏋️ KB Front Raise",weight:"10lb KB",hold:"1 sec at top",reps:"10",sets:"3",inhale:"Lower",exhale:"Raise up",easier:"BW",harder:"🩷 Pink band underfoot",steps:["Stand tall, hold 10lb KB with both hands in front of thighs.","Slight elbow bend.","Exhale: raise KB forward and up to shoulder height.","Hold 1 second. Do not shrug shoulders.","Inhale: lower slowly. Repeat 10 reps."]},
+    {name:"🏋️ Arnold Press",weight:"10lb KB",hold:"—",reps:"8 each side",sets:"3",inhale:"Lower + rotate in",exhale:"Press + rotate out",easier:"BW",harder:"15lb KB",steps:["Stand or sit tall. Hold 10lb KB in right hand at shoulder, palm facing face.","Exhale: press KB overhead, rotating palm outward.","Arm fully extended at top, palm facing forward.","Inhale: reverse rotation lowering — palm faces you at bottom.","8 reps right then switch."]},
+    {name:"💪 KB Bicep Curl",weight:"10lb KB",hold:"—",reps:"12 each side",sets:"3",inhale:"Lower",exhale:"Curl up",easier:"BW",harder:"🩷 Pink band underfoot",steps:["Stand tall, hold 10lb KB in right hand, palm forward.","Keep right elbow pinned to side.","Exhale: curl KB up toward shoulder.","Squeeze bicep at top.","Inhale: lower all the way down. 12 reps right then switch."]},
+    {name:"💪 Hammer Curl",weight:"10lb KB",hold:"—",reps:"12 each side",sets:"3",inhale:"Lower",exhale:"Curl up",easier:"BW",harder:"🩷 Pink band underfoot",steps:["Stand tall, KB in right hand, palm facing your body (neutral grip).","Keep elbow close to side.","Exhale: curl KB upward, palm stays facing inward.","Squeeze at top, then lower slowly.","12 reps each side."]},
+    {name:"💪 Tricep Overhead Extension",weight:"10lb KB",hold:"—",reps:"12",sets:"3",inhale:"Lower behind head",exhale:"Press up",easier:"BW",harder:"15lb KB",steps:["Stand or sit tall. Hold 10lb KB by ball with both hands overhead.","Inhale: bend elbows, lower KB behind head. Elbows stay close together.","Stop when elbows at 90°.","Exhale: press KB back overhead. Squeeze triceps at top.","Repeat 12 reps."]},
+    {name:"💪 Tricep Kickback",weight:"10lb KB",hold:"1 sec squeeze",reps:"10 each side",sets:"3",inhale:"Bend elbow in",exhale:"Kick back + extend",easier:"BW",harder:"🩷 Pink band",steps:["Hinge forward 45°, flat back. Hold 10lb KB in right hand. Upper arm parallel to floor.","Upper arm stays locked — pinned against side.","Exhale: straighten arm behind you. Squeeze tricep hard.","Hold 1 second at full extension.","Inhale: bend elbow to 90°. 10 reps right then switch."]},
+    {name:"💪 Wall Push-Up",weight:"BW",hold:"—",reps:"12-15",sets:"3",inhale:"Lower toward wall",exhale:"Push away",easier:"Stand closer to wall",harder:"Stand further from wall",steps:["Stand facing wall, arms-length away. Hands at shoulder height.","Walk feet back so body is at slight diagonal.","Inhale: slowly bend elbows, lower chest toward wall. Body straight.","Exhale: push evenly through both hands to return.","12-15 reps."]},
+    {name:"🏹 Band Chest Press",weight:"🩷 Pink band anchored",hold:"—",reps:"12",sets:"3",inhale:"Return to chest",exhale:"Press forward",easier:"💚 Green band",harder:"💜 Purple band",steps:["Anchor pink band at chest height behind you.","Hold one end in each hand. Step forward to create tension.","Split stance for stability. Hands at chest, elbows bent.","Exhale: press both hands forward until arms extended.","Inhale: slowly return to chest. 12 reps."]},
+    {name:"🔄 Thread the Needle",weight:"BW",hold:"30 sec/side",reps:"—",sets:"2",inhale:"Prepare",exhale:"Thread through + rotate",easier:"Reduce rotation",harder:"Add 10lb KB in threading hand",steps:["Start on all fours.","Slide right arm along floor underneath left arm.","Right shoulder and right cheek lower toward floor.","Left arm stays planted. Hold 30 seconds.","Unthread and return to all fours. Switch sides."]},
+    {name:"🧱 Wall Back Extension",weight:"BW",hold:"—",reps:"10",sets:"3",inhale:"Arch back gently",exhale:"Return to neutral",easier:"Smaller range",harder:"Add arm reach overhead",steps:["Stand with back against wall, feet 12-18 inches out.","Hands on lower back for support.","Inhale: chest opens upward, thoracic spine extends gently.","Only go as far as comfortable.","Exhale: return to neutral, lower back toward wall. 10 reps."]},
+    {name:"💪 Wrist Curl",weight:"10lb KB",hold:"—",reps:"15",sets:"2",inhale:"Lower",exhale:"Curl up",easier:"BW",harder:"15lb KB",steps:["Sit on bench. Hold 10lb KB in right hand, palm up.","Forearm resting on thigh — wrist hangs off knee.","Inhale: let KB roll down, wrist lowers fully.","Exhale: curl wrist upward. Hold a moment at top.","15 reps right then switch."]},
+  ],
+  opening:[
+    {name:"🛌 Side-Lying Constructive Rest",weight:"BW",hold:"2 min",reps:"—",sets:"1",inhale:"Expand ribcage",exhale:"Soften belly",easier:"—",harder:"Add pelvic floor awareness",steps:["Lie on LEFT side. Pillow between knees.","Let body completely relax.","Inhale for 4 counts — ribcage expands sideways.","Exhale for 6 counts — belly softens completely.","Stay 2 full minutes."]},
+    {name:"🌬️ 360° Diaphragmatic Breathing",weight:"BW",hold:"—",reps:"10 breaths",sets:"1",inhale:"Expand all directions",exhale:"Release + pelvic floor lift",easier:"—",harder:"Extend exhale longer",steps:["Comfortable seated position.","One hand on lower ribs, one on belly.","Inhale: breathe into sides, front, and back. Ribs expand like an umbrella.","Exhale: let everything release. Gently draw pelvic floor upward.","10 full cycles."]},
+    {name:"🐱 Cat-Cow",weight:"BW",hold:"—",reps:"10 rounds",sets:"1",inhale:"Cow — arch back",exhale:"Cat — round back",easier:"Smaller range",harder:"Add neck release",steps:["All fours position.","Inhale: belly drops, tailbone lifts, chest opens (Cow).","Exhale: press floor away, round spine up (Cat).","Connect movement smoothly with breath.","10 complete rounds."]},
+    {name:"🦅 Bird-Dog BW",weight:"BW",hold:"—",reps:"8 each side",sets:"1",inhale:"Prepare",exhale:"Extend out",easier:"Reduce range",harder:"2 sec hold at top",steps:["All fours, find stable neutral spine.","Exhale: slowly extend right arm forward and left leg back.","Move slowly enough that hips stay level.","Hold 1-2 seconds at top. Inhale to return.","8 each side."]},
+  ],
+  sunsal:[
+    {name:"🧍 Mountain (Tadasana)",weight:"BW",hold:"5 breaths",reps:"—",sets:"—",inhale:"Stand tall",exhale:"Root down",easier:"Feet hip-width",harder:"Eyes closed",steps:["Stand feet hip-width apart, weight even.","Lift all 10 toes, spread them, lower back down.","Feel four corners of each foot pressing into floor.","Lengthen through crown of head.","Take 5 full slow breaths."]},
+    {name:"🙌 Upward Salute",weight:"BW",hold:"2 breaths",reps:"—",sets:"—",inhale:"Reach arms up",exhale:"—",easier:"Hands on hips",harder:"Full expression",steps:["From Mountain, inhale and sweep arms overhead.","Palms come together or face each other.","Lengthen sides of waist reaching upward.","Look straight ahead.","2 breaths before flowing forward."]},
+    {name:"🫂 Standing Forward Fold",weight:"BW",hold:"3 breaths",reps:"—",sets:"—",inhale:"—",exhale:"Fold down",easier:"Knees bent, hands to blocks",harder:"Straighter legs",steps:["Hinge forward at hips — not waist.","Bend knees generously for belly space.","Let head hang heavy, neck completely relaxed.","3 breaths, hamstrings and lower back releasing.","Step right foot back into Low Lunge."]},
+    {name:"🦵 Low Lunge Right",weight:"BW",hold:"5 breaths",reps:"—",sets:"—",inhale:"Lift chest",exhale:"Step back",easier:"Back knee down",harder:"Hands off blocks",steps:["Step right foot back into lunge. Back knee can rest on mat.","Front left knee directly over ankle.","Hands on blocks or left thigh.","Inhale: lift chest, draw tailbone down, feel hip flexor stretch.","5 full breaths."]},
+    {name:"🐕 Downward Dog",weight:"BW",hold:"5 breaths",reps:"—",sets:"—",inhale:"—",exhale:"Press back",easier:"Knees bent",harder:"Heels pressing down",steps:["From Low Lunge, step right foot to meet left.","Lift hips high, pressing back toward ceiling. Spine lengthens.","Feet hip-width or wider for belly.","Press firmly through all 10 fingers.","Hold 5 breaths."]},
+    {name:"🔄 Bent Knee Hip Circles Right",weight:"BW",hold:"—",reps:"5 each direction",sets:"—",inhale:"Natural",exhale:"Natural",easier:"Smaller circles",harder:"Slower + larger",steps:["From Single-Leg Down Dog, bend right knee.","Draw slow circles with right knee in the air.","5 circles clockwise, then 5 counterclockwise.","Breathe throughout.","Then step right foot forward for Low Lunge Left."]},
+    {name:"🧎 Modified Chaturanga",weight:"BW",hold:"—",reps:"1 rep",sets:"—",inhale:"Prepare",exhale:"Lower down (knees)",easier:"Wall push-up instead",harder:"Full chaturanga (early preg only)",steps:["From Downward Dog, come to plank with knees on floor.","Inhale to prepare, core gently engaged.","Exhale: bend elbows straight back, lower chest to floor in control.","Press back up or transition to Cow Pose.","After 20 weeks, substitute wall push-up."]},
+    {name:"🐄 Cow Pose (replaces Updog)",weight:"BW",hold:"3 breaths",reps:"—",sets:"—",inhale:"Lift chest",exhale:"—",easier:"Smaller arch",harder:"Add block under chest",steps:["From belly or low position, come to all fours.","Inhale: drop belly, lift tailbone, open chest forward.","This replaces Upward Dog — too much pressure on linea alba.","Hold 3 breaths.","Then press back up to Downward Dog."]},
+    {name:"🔁 Repeat Full Round",weight:"BW",hold:"—",reps:"2-3 rounds total",sets:"—",inhale:"—",exhale:"—",easier:"1 round only",harder:"3 full rounds",steps:["After Hip Circles Left, step or walk both feet to front of mat.","Inhale to roll up slowly to standing.","Pause in Mountain Pose for 3 breaths.","Complete 2-3 rounds total based on how you feel.","Each round becomes more fluid as body warms up."]},
+  ],
+  barre:[
+    {name:"🦵 Toe Raises",weight:"BW",hold:"—",reps:"15",sets:"3",inhale:"Lower heels",exhale:"Rise onto toes",easier:"Both hands on wall",harder:"Single leg",steps:["Stand at barre or wall, hands lightly on support.","Feet hip-width, toes forward. Stand tall.","Exhale: rise onto balls of feet, heels as high as possible.","Hold 1 second at top, squeeze calves.","Inhale: slowly lower heels with control. 15 reps."]},
+    {name:"🏋️ Heel-Raised Deep Squat",weight:"BW",hold:"—",reps:"10",sets:"3",inhale:"Sit all the way down",exhale:"Press up to stand",easier:"Hold wall, reduce depth",harder:"10lb KB as counterweight",steps:["Place rolled mat under heels. Stand wider than hip-width, toes out.","Hold barre or chair lightly for balance.","Inhale: sit hips into deep squat, chest upright.","Aim thighs parallel to floor or lower.","Exhale: press through heels to stand, squeezing glutes. 10 reps."]},
+    {name:"↔️ Side Lunge",weight:"BW",hold:"—",reps:"10 each side",sets:"3",inhale:"Step wide + sit into hip",exhale:"Press foot to stand",easier:"Smaller step, 70% depth",harder:"10lb KB goblet hold",steps:["Stand tall, feet together. Hands on hips or KB at chest.","Inhale: step right foot wide, left leg stays straight.","Sit back into right hip, right knee over right toes.","Left leg straight, left foot flat. Torso upright.","Exhale: push through right heel to start. 10 reps each side."]},
+    {name:"🩰 Barre Leg Lift & Pulse Back",weight:"BW",hold:"—",reps:"20 pulses/side",sets:"3",inhale:"Prepare/lower",exhale:"Lift + each pulse",easier:"Hold wall, reduce height",harder:"💚 Green band ankles",steps:["Stand facing barre or wall, both hands lightly on support.","Shift weight to right foot. Point left toe behind, touching floor.","Lift left leg behind you 6-12 inches.","20 small rapid upward pulses. Exhale with each pulse.","Switch sides."]},
+    {name:"🦵 Standing Lateral Raise",weight:"💚 Green band ankles",hold:"—",reps:"12 each side",sets:"2",inhale:"Lower",exhale:"Raise out to side",easier:"BW only",harder:"💙 Blue band",steps:["Stand next to wall, one hand on wall. Green band around both ankles.","Stand on right foot, soft knee. Left leg slightly off floor.","Exhale: raise left leg out to side, hips squared forward.","Raise to hip height or slightly below.","Inhale: lower slowly. 12 reps then switch."]},
+    {name:"🚶 Banded Lateral Walk",weight:"💙 Blue band above knees",hold:"—",reps:"15 steps each dir.",sets:"2",inhale:"Natural",exhale:"Natural",easier:"💚 Green band",harder:"🖤 Black band",steps:["Place blue band above both knees. Stand feet hip-width.","Slightly bend knees into quarter squat. Keep this throughout.","Step right foot wide — maintaining tension in band.","Bring left foot toward right but keep feet at least hip-width.","15 steps right, then 15 steps left."]},
+    {name:"🔥 Fire Hydrant",weight:"💚 Green band above knees",hold:"1 sec at top",reps:"12 each side",sets:"3",inhale:"Lower",exhale:"Lift out",easier:"BW only",harder:"💙 Blue band",steps:["All fours, green band above both knees, neutral spine.","Keep right knee bent at 90°.","Exhale: lift right knee out to side until thigh parallel to floor.","Hold 1 second at top, squeeze glute.","Inhale: lower knee back. 12 reps right then switch."]},
+    {name:"⚖️ Single Leg Balance Hold",weight:"BW",hold:"20-30 sec/side",reps:"—",sets:"2",inhale:"Natural",exhale:"Natural",easier:"Fingertip wall support",harder:"Eyes closed",steps:["Stand near wall for safety. Shift weight to right foot, soft knee.","Lift left foot just off floor — hover it.","Stand tall, breathe naturally. Gaze at fixed point.","Feel ankle, calf, and glute activating to keep stable.","Hold 20-30 seconds then switch."]},
+  ],
+  warrior:[
+    {name:"⚔️ Warrior I",weight:"BW",hold:"5 breaths/side",reps:"—",sets:"1",inhale:"Lift chest + arms",exhale:"Root through feet",easier:"Shorten stance",harder:"Full arm reach",steps:["From Mountain, step right foot back 3-4 feet. Right heel at 45°.","Square hips toward front. Bend front knee to 90°.","Inhale: sweep both arms overhead. Lift chest.","Press evenly through both feet.","5 slow breaths then switch."]},
+    {name:"⚔️ Warrior II",weight:"BW",hold:"5 breaths/side",reps:"—",sets:"1",inhale:"Open chest",exhale:"Sink into lunge",easier:"Arms at hips",harder:"Full arm extension",steps:["From Warrior I right, open hips to face long side of mat.","Bend front right knee over right ankle.","Extend both arms out at shoulder height.","Gaze over right fingertips. Relax shoulders.","5 breaths then switch."]},
+    {name:"🌟 Extended Side Angle",weight:"BW",hold:"5 breaths/side",reps:"—",sets:"1",inhale:"Lift top arm",exhale:"Lengthen side body",easier:"Forearm on thigh",harder:"Block on floor",steps:["From Warrior II right, lower forearm to right thigh or block.","Extend left arm up and over ear — long diagonal line.","Press right knee toward right hand.","5 breaths, feeling stretch along left side.","Switch sides."]},
+    {name:"🔺 Triangle (Trikonasana)",weight:"BW",hold:"5 breaths/side",reps:"—",sets:"1",inhale:"Lift top arm",exhale:"Lengthen spine",easier:"Hand on block",harder:"Hand toward floor",steps:["Wide stance, right foot forward. Both legs straightened (soft knees).","Extend arms wide at shoulder height.","Inhale: reach right hand forward, lower toward block outside right foot.","Stack left shoulder over right. Left arm to ceiling.","5 breaths then switch."]},
+    {name:"🕊️ Peaceful Warrior",weight:"BW",hold:"5 breaths/side",reps:"—",sets:"1",inhale:"Lift front arm",exhale:"Arch back gently",easier:"Smaller arch",harder:"Full expression",steps:["From Warrior II right, flip right palm up.","Inhale: sweep right arm up and back into gentle backbend.","Left hand slides down back left leg.","Feel stretch along entire right side.","5 breaths then switch."]},
+  ],
+  hip:[
+    {name:"🦵 Low Lunge (Anjaneyasana)",weight:"BW",hold:"8 breaths/side",reps:"—",sets:"1",inhale:"Lift chest",exhale:"Sink hips forward",easier:"Hands on blocks",harder:"Hands off blocks — 70% depth max",steps:["Step right foot forward. Lower left knee to mat.","Right knee directly over right ankle. Left shin on floor.","Hands on right thigh or blocks.","Inhale: tailbone down, chest up. Feel left hip flexor opening.","Exhale: gently shift hips forward — 70% max depth. 8 breaths then switch."]},
+    {name:"✂️ Half Split",weight:"BW",hold:"6 breaths/side",reps:"—",sets:"1",inhale:"Lengthen spine",exhale:"Slight forward fold",easier:"Hands on blocks",harder:"Deepen fold slightly",steps:["From Low Lunge right, walk hands back, shift hips back over left knee.","Straighten right leg out front — heel on floor, toes up.","Hands on blocks beside right leg.","Inhale: lengthen spine. Exhale: hinge gently over right leg.","Stay at 70% max range. 6 breaths then switch."]},
+    {name:"🕊️ Pigeon Pose Modified",weight:"BW",hold:"8 breaths/side",reps:"—",sets:"1",inhale:"Expand back body",exhale:"Soften into hip",easier:"Block under hip — always use",harder:"Fold forward over leg",steps:["From Downward Dog, bring right knee forward toward right wrist.","ALWAYS place block or blanket under right hip.","Extend left leg long behind. Hip points down.","Breathe into outer right hip.","8 breaths then switch. Do not skip the block."]},
+    {name:"🧘 Deep Squat Hold (Malasana)",weight:"BW",hold:"60 sec",reps:"—",sets:"3",inhale:"Pelvic floor releases DOWN",exhale:"Gently lift pelvic floor",easier:"Rolled mat under heels",harder:"Eyes closed, no support",steps:["Stand wider than hip-width, toes out. Face wall if needed.","Lower into deep squat.","If heels lift, place rolled blanket under them.","Inhale: pelvic floor releases open downward.","Exhale: gently draw pelvic floor up. 60 seconds per hold."]},
+    {name:"🦋 Bound Angle (Baddha Konasana)",weight:"BW",hold:"8 breaths",reps:"—",sets:"1",inhale:"Tall spine",exhale:"Soften inner thighs",easier:"Sit on block",harder:"Gentle forward lean",steps:["Sit on floor or block. Bring soles of feet together.","Hold feet or ankles. Knees fall open.","Inhale: sit taller. Exhale: inner thighs soften and release.","Do not push knees down.","8 breaths."]},
+    {name:"🐊 Reclined Figure-4",weight:"BW",hold:"45 sec/side",reps:"—",sets:"1",inhale:"Natural",exhale:"Soften into stretch",easier:"Less hip flexion",harder:"Draw knee closer",steps:["Lie on back. Bend both knees. Cross right ankle over left thigh.","Flex right foot. Hold back of left thigh, draw toward you gently.","Feel stretch in outer right hip and glute.","Hold 45 seconds breathing slowly.","Switch sides. Roll to LEFT to come up."]},
+  ],
+  chestopen:[
+    {name:"🧱 Wall Updog",weight:"BW",hold:"5 breaths",reps:"—",sets:"2",inhale:"Open chest forward",exhale:"Return to neutral",easier:"Hands higher on wall",harder:"Hands at chest height",steps:["Stand facing wall, hands at chest height, slightly wider than shoulder-width.","Walk feet back so body is at slight forward lean.","Inhale: gently press chest toward wall, thoracic spine extends.","Lift chest, feel front body open.","Exhale: press away from wall. 5 breaths per set."]},
+    {name:"🤸 Shoulder Blade Squeeze",weight:"BW",hold:"2 sec squeeze",reps:"15",sets:"3",inhale:"Squeeze blades back",exhale:"Release forward",easier:"Seated version",harder:"Add light resistance band",steps:["Stand or sit tall. Arms at sides, palms forward.","Inhale: draw shoulder blades together. Chest widens.","Hold 2 seconds — feel middle back muscles working.","Exhale: release shoulder blades forward.","15 reps. Keep shoulders down, not shrugged."]},
+    {name:"🏹 Goal Post Chest Opener",weight:"BW",hold:"—",reps:"10 open/close",sets:"3",inhale:"Open wide",exhale:"Close in",easier:"Seated version",harder:"🩷 Pink band across back",steps:["Stand or sit tall. Arms up at shoulder height, elbows bent 90°.","Inhale: draw elbows back, squeeze shoulder blades. Open chest.","Exhale: bring elbows toward each other in front, round upper back.","Alternate 10 full open-and-close cycles.","For band variation: drape pink band across back at armpit height."]},
+    {name:"🔄 Thread the Needle",weight:"BW",hold:"30 sec/side",reps:"—",sets:"2",inhale:"Prepare",exhale:"Thread through + rotate",easier:"Less rotation",harder:"Add 10lb KB in threading hand",steps:["All fours — wrists under shoulders, knees under hips.","Slide right arm along floor underneath left arm.","Right shoulder and cheek lower toward floor.","Left arm stays planted. 30 seconds.","Slowly unthread and return to all fours. Switch sides."]},
+    {name:"💆 Hands Clasped Behind Back",weight:"BW",hold:"30 sec",reps:"—",sets:"2",inhale:"Expand chest",exhale:"Release",easier:"Smaller range",harder:"Lift hands higher behind",steps:["Stand tall feet hip-width.","Interlace fingers behind back (or hold strap).","Inhale: straighten arms, gently press knuckles downward and backward.","Feel chest widen, shoulder blades draw together.","Hold 30 seconds breathing into front of chest."]},
+  ],
+  pilates:[
+    {name:"🦵 Clamshell (45°, feet touching)",weight:"BW",hold:"—",reps:"15 each side",sets:"3",inhale:"Lower knee",exhale:"Lift knee (feet stay together)",easier:"Smaller range",harder:"💚 Green band above knees",steps:["Lie on right side, hips at 45° flexion, knees stacked. Head on right arm.","Stack hips directly on top of each other.","Feet stay touching throughout.","Exhale: rotate top knee open — clamshell. Keep pelvis stable.","15 reps. Roll to other side."]},
+    {name:"🌟 Modified Side Plank Hold",weight:"BW",hold:"20-30 sec/side",reps:"—",sets:"3",inhale:"Prepare",exhale:"Brace + breathe steadily",easier:"Reduce hold time",harder:"Full side plank (before 20 wks only)",steps:["Lie on right side, knees bent 45°, stacked. Prop on right forearm.","Lift hips off floor to form straight line.","Breathe continuously. Core gently engaged.","Hold 20-30 seconds. Lower with control.","Switch sides."]},
+    {name:"🌟 Modified Side Plank + Draw",weight:"BW",hold:"—",reps:"10 each side",sets:"3",inhale:"Extend top arm & leg out",exhale:"Draw top arm + leg to meet",easier:"Hold only",harder:"💚 Green band ankles",steps:["Modified side plank on right forearm, knees bent, hips lifted.","Extend top arm in front and top leg straight behind.","Inhale: feel the lengthening.","Exhale: draw top elbow and knee toward each other.","Inhale: re-extend. 10 reps per side."]},
+    {name:"🦵 Glute Bridge + Pelvic Floor",weight:"BW",hold:"2 sec at top",reps:"12",sets:"3",inhale:"Lower down",exhale:"Drive up + lift pelvic floor",easier:"No pelvic floor add",harder:"💙 Blue band above knees",steps:["Lie on back, knees bent, feet flat.","Inhale: release pelvic floor downward to prepare.","Exhale: press through heels, squeeze glutes, drive hips up — simultaneously lift pelvic floor.","Hold 2 seconds at top.","Inhale: lower down, release pelvic floor. 12 reps."]},
+    {name:"🌬️ Pelvic Floor Breathing",weight:"BW",hold:"—",reps:"10 breaths",sets:"1",inhale:"Release pelvic floor DOWN",exhale:"Gently lift pelvic floor",easier:"Seated position",harder:"On all fours",steps:["Comfortable seated or all fours.","Focus attention at pelvic floor.","Inhale for 4 counts: pelvic floor releases, softens, opens downward.","Exhale for 6 counts: gently draw pelvic floor upward and inward.","10 complete breath cycles."]},
+  ],
+};
+
+const muscles=[
+  {name:"🍑 Glute Max",cov:"✅ Excellent",freq:"3x/week",ex:"KB deadlift, RDL, barre pulses, Warriors"},
+  {name:"🦵 Glute Med",cov:"✅ Excellent",freq:"3x/week",ex:"Clamshell, lateral raise, fire hydrant, lateral walk"},
+  {name:"🦵 Hamstrings",cov:"✅ Good",freq:"3x/week",ex:"KB deadlift, RDL, glute bridge, Bulgarian"},
+  {name:"🦵 Quads",cov:"✅ Excellent",freq:"3x/week",ex:"Goblet squat, heel-raised squat, Warriors, lunges"},
+  {name:"🦵 Calves",cov:"✅ Good",freq:"3x/week",ex:"Toe raises, heel-raised squat"},
+  {name:"🦵 Adductors",cov:"✅ Excellent",freq:"3x/week",ex:"Sumo squat, side lunge, inner thigh squeeze"},
+  {name:"🦵 Hip Flexors",cov:"✅ Good",freq:"2x/week",ex:"Standing march, low lunge"},
+  {name:"🔲 Obliques",cov:"✅ Added",freq:"3x/week",ex:"Modified side plank hold, side plank + draw"},
+  {name:"🔙 Upper Back",cov:"✅ Good",freq:"2x/week",ex:"KB row, shoulder blade squeeze, thread the needle"},
+  {name:"💪 Biceps",cov:"✅ Good",freq:"1x/week",ex:"KB curl, hammer curl, rows"},
+  {name:"💪 Triceps",cov:"✅ Good",freq:"1x/week",ex:"Overhead extension, kickback"},
+  {name:"🏋️ Shoulders",cov:"✅ Good",freq:"2x/week",ex:"KB press, lateral raise, Arnold press, halo"},
+  {name:"💪 Chest",cov:"✅ Good",freq:"1-2x/week",ex:"Wall push-ups, band chest press"},
+  {name:"🌸 Pelvic Floor",cov:"✅ Excellent",freq:"3x/week",ex:"Deep squat, bridges, breathing"},
+  {name:"🫀 Deep Core",cov:"✅ Excellent",freq:"3x/week",ex:"Bird-dog, suitcase carry, side plank"},
+  {name:"💪 Forearms/Grip",cov:"✅ Good",freq:"2x/week",ex:"Farmer carry, wrist curl"},
+  {name:"🏊 Cardio",cov:"✅ Excellent",freq:"3x/week",ex:"Swimming"},
+];
+
+// ═══ SET TRACKING STATE
+const exState = {}; // exId -> { completedSets, targetSets, isDone }
+let timerExId = null; // which exercise the timer is currently serving
+
+function getTargetSets(setsStr) {
+  const n = parseInt(setsStr);
+  return isNaN(n) ? 0 : n;
+}
+
+function initExState(exId, setsStr) {
+  if (!exState[exId]) {
+    exState[exId] = { completedSets: 0, targetSets: getTargetSets(setsStr), isDone: false };
+  }
+}
+
+function completeSet(exId) {
+  const s = exState[exId];
+  if (!s || s.isDone) return;
+  s.completedSets = Math.min(s.completedSets + 1, s.targetSets || 99);
+  if (s.targetSets > 0 && s.completedSets >= s.targetSets) {
+    s.isDone = true;
+    markExDone(exId);
+  } else {
+    updateSetDots(exId);
+  }
+  updateProgress();
+  updateTimerSetInfo();
+}
+
+function markExDone(exId) {
+  const row = document.getElementById(exId);
+  if (!row) return;
+  row.classList.add('ex-done');
+  const check = row.querySelector('.ex-done-check');
+  if (check) check.classList.add('checked');
+  updateSetDots(exId);
+  showToast('✅ ' + (row.querySelector('.ex-name')?.textContent || 'Exercise') + ' done!', 'success');
+  // check if parent card is all done
+  checkCardDone(row.closest('.card'));
+}
+
+function toggleManualDone(exId) {
+  const s = exState[exId];
+  if (!s) return;
+  if (s.isDone) {
+    // undo
+    s.isDone = false;
+    s.completedSets = Math.max(0, s.targetSets - 1);
+    const row = document.getElementById(exId);
+    if (row) row.classList.remove('ex-done');
+    const check = row?.querySelector('.ex-done-check');
+    if (check) check.classList.remove('checked');
+  } else {
+    s.completedSets = s.targetSets || s.completedSets;
+    s.isDone = true;
+    markExDone(exId);
+  }
+  updateSetDots(exId);
+  updateProgress();
+  checkCardDone(document.getElementById(exId)?.closest('.card'));
+}
+
+function updateSetDots(exId) {
+  const s = exState[exId];
+  if (!s) return;
+  const container = document.getElementById('dots-' + exId);
+  if (!container) return;
+  container.innerHTML = '';
+  if (s.targetSets <= 0) return;
+  for (let i = 0; i < s.targetSets; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'set-dot';
+    if (i < s.completedSets) dot.classList.add('done');
+    else if (i === s.completedSets && !s.isDone) dot.classList.add('active');
+    dot.title = `Set ${i+1}`;
+    dot.onclick = (e) => { e.stopPropagation(); manualDotClick(exId, i); };
+    container.appendChild(dot);
+  }
+  const lbl = document.getElementById('setlabel-' + exId);
+  if (lbl) {
+    lbl.textContent = s.targetSets > 0 ? `${s.completedSets}/${s.targetSets}` : '';
+  }
+}
+
+function manualDotClick(exId, dotIndex) {
+  const s = exState[exId];
+  if (!s) return;
+  if (dotIndex < s.completedSets) {
+    // clicking a done dot — undo back to that dot
+    s.completedSets = dotIndex;
+    s.isDone = false;
+    const row = document.getElementById(exId);
+    if (row) row.classList.remove('ex-done');
+    const check = row?.querySelector('.ex-done-check');
+    if (check) check.classList.remove('checked');
+  } else {
+    // clicking an undone dot — fill up to and including it
+    s.completedSets = dotIndex + 1;
+    if (s.targetSets > 0 && s.completedSets >= s.targetSets) {
+      s.isDone = true;
+      markExDone(exId);
+    }
+  }
+  updateSetDots(exId);
+  updateProgress();
+  checkCardDone(document.getElementById(exId)?.closest('.card'));
+}
+
+function checkCardDone(card) {
+  if (!card) return;
+  const rows = card.querySelectorAll('.ex-row[id]');
+  if (!rows.length) return;
+  const allDone = Array.from(rows).every(r => exState[r.id]?.isDone);
+  card.classList.toggle('card-done', allDone);
+}
+
+function updateProgress() {
+  const all = Object.values(exState);
+  const total = all.length;
+  const done = all.filter(s => s.isDone).length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${done} / ${total} exercises`;
+}
+
+function resetWorkout() {
+  if (!confirm('Reset all exercise progress for this session?')) return;
+  Object.keys(exState).forEach(id => {
+    exState[id].completedSets = 0;
+    exState[id].isDone = false;
+    const row = document.getElementById(id);
+    if (row) { row.classList.remove('ex-done'); }
+    const check = row?.querySelector('.ex-done-check');
+    if (check) check.classList.remove('checked');
+    updateSetDots(id);
+  });
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('card-done'));
+  updateProgress();
+  showToast('↺ Workout reset', 'info');
+}
+
+// ═══ RENDER
+function renderExercise(ex, prefix, i) {
+  const id = `${prefix}-${i}`;
+  initExState(id, ex.sets);
+
+  const inlineMeta = [
+    ex.sets !== '—' ? `<span class="detail-chip chip-sets">${ex.sets} set${parseInt(ex.sets)>1?'s':''}</span>` : '',
+    ex.reps !== '—' ? `<span class="detail-chip chip-reps">${ex.reps}</span>` : '',
+    ex.hold !== '—' ? `<span class="detail-chip chip-hold">⏱ ${ex.hold}</span>` : '',
+    `<span class="detail-chip chip-weight">${ex.weight}</span>`,
+  ].join('');
+
+  // set dots in header
+  const targetSets = getTargetSets(ex.sets);
+  const setDotsHtml = targetSets > 0 ? `
+    <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+      <div class="set-dots" id="dots-${id}"></div>
+      <span class="set-count-label" id="setlabel-${id}">0/${targetSets}</span>
+    </div>` : '';
+
+  const statsBar = [
+    ex.sets !== '—' ? `<div class="stat-block"><span class="stat-icon">🔁</span><span class="stat-val">${ex.sets}</span><span class="stat-lbl">Sets</span></div>` : '',
+    ex.reps !== '—' ? `<div class="stat-block"><span class="stat-icon">✕</span><span class="stat-val">${ex.reps}</span><span class="stat-lbl">Reps</span></div>` : '',
+    ex.hold !== '—' ? `<div class="stat-block"><span class="stat-icon">⏱</span><span class="stat-val">${ex.hold}</span><span class="stat-lbl">Hold</span></div>` : '',
+    `<div class="stat-block"><span class="stat-icon">🏋️</span><span class="stat-val">${ex.weight}</span><span class="stat-lbl">Weight</span></div>`,
+  ].join('');
+
+  const stepsHtml = ex.steps ? `
+    <div class="detail-section">
+      <div class="detail-label">Step-by-Step</div>
+      <ul class="steps-list">
+        ${ex.steps.map((s,n) => `<li class="step-item"><span class="step-num">${n+1}</span><span>${s}</span></li>`).join('')}
+      </ul>
+    </div>` : '';
+
+  const hasRealSets = targetSets > 0;
+
+  return `<div class="ex-row" id="${id}" data-search="${(ex.name+' '+ex.weight+' '+ex.inhale+' '+ex.exhale+' '+ex.easier+' '+ex.harder).toLowerCase()}">
+    <div class="ex-summary">
+      <div class="ex-done-check" id="check-${id}" onclick="toggleManualDone('${id}');event.stopPropagation()">✓</div>
+      <div class="ex-name-block" onclick="toggleEx('${id}')">
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-inline-meta">${inlineMeta}</div>
+        ${setDotsHtml}
+      </div>
+      <span class="ex-chevron" onclick="toggleEx('${id}')">▼</span>
+    </div>
+    <div class="ex-detail">
+      <div class="ex-stats-bar">${statsBar}</div>
+      ${stepsHtml}
+      <div class="detail-section">
+        <div class="detail-label">Breathing</div>
+        <div class="breath-row">
+          <span class="breath-chip inhale">🫁 IN: ${ex.inhale}</span>
+          <span class="breath-chip exhale">💨 OUT: ${ex.exhale}</span>
+        </div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-label">Modifications</div>
+        <div class="mod-row">
+          <span class="mod-easier">🟢 Easier: ${ex.easier}</span>
+          <span class="mod-harder">🔴 Harder: ${ex.harder}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:0;flex-wrap:wrap;align-items:center;">
+        ${hasRealSets ? `<button class="complete-set-btn" id="setbtn-${id}" onclick="handleCompleteSet('${id}',event)">✓ Complete Set</button>` : ''}
+        <button class="rest-btn" onclick="startRest(event, '${id}', '${ex.name.replace(/'/g,"\\'")}')">⏱ Rest Timer</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function handleCompleteSet(exId, e) {
+  e.stopPropagation();
+  const s = exState[exId];
+  if (s && s.isDone) return;
+  completeSet(exId);
+  // start rest timer automatically
+  startRest(e, exId, document.getElementById(exId)?.querySelector('.ex-name')?.textContent || '', true);
+}
+
+function toggleEx(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function renderAll() {
+  const map = [
+    ['warmup-exercises', exercises.warmup, 'wu'],
+    ['block1-exercises', exercises.block1, 'b1'],
+    ['block2-exercises', exercises.block2, 'b2'],
+    ['block3-exercises', exercises.block3, 'b3'],
+    ['block4-exercises', exercises.block4, 'b4'],
+    ['cooldown-exercises', exercises.cooldown, 'cd'],
+    ['upper-exercises', exercises.upper, 'up'],
+    ['opening-exercises', exercises.opening, 'op'],
+    ['sunsal-exercises', exercises.sunsal, 'ss'],
+    ['barre-exercises', exercises.barre, 'ba'],
+    ['warrior-exercises', exercises.warrior, 'wa'],
+    ['hip-exercises', exercises.hip, 'hi'],
+    ['chest-exercises', exercises.chestopen, 'ch'],
+    ['pilates-exercises', exercises.pilates, 'pi'],
+  ];
+  map.forEach(([id, list, prefix]) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = list.map((ex, i) => renderExercise(ex, prefix, i)).join('');
+  });
+
+  const mg = document.getElementById('muscle-grid');
+  if (mg) mg.innerHTML = muscles.map(m => `
+    <div class="muscle-row">
+      <div class="muscle-name">${m.name}</div>
+      <div class="${m.cov.includes('Excellent')?'coverage-excellent':'coverage-good'}">${m.cov}</div>
+      <div class="muscle-freq">${m.freq}</div>
+      <div class="muscle-ex">${m.ex}</div>
+    </div>`).join('');
+
+  // init all dots
+  Object.keys(exState).forEach(id => updateSetDots(id));
+  updateProgress();
+}
+
+// ═══ TABS
+function showTab(name, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  el.classList.add('active');
+  el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  document.getElementById('searchInput').value = '';
+  clearSearch();
+}
+
+// ═══ SEARCH
+function doSearch() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  if (!q) { clearSearch(); return; }
+  document.querySelectorAll('.section').forEach(s => s.classList.add('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('[data-search]').forEach(el => {
+    el.classList.toggle('hidden-search', !el.getAttribute('data-search').includes(q));
+  });
+  document.querySelectorAll('.card').forEach(card => {
+    const rows = card.querySelectorAll('[data-search]');
+    if (!rows.length) return;
+    card.style.display = Array.from(rows).some(r => !r.classList.contains('hidden-search')) ? '' : 'none';
+  });
+}
+function clearSearch() {
+  document.querySelectorAll('[data-search]').forEach(el => el.classList.remove('hidden-search'));
+  document.querySelectorAll('.card').forEach(c => c.style.display = '');
+  const active = document.querySelector('.tab.active');
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  if (active) {
+    const name = active.getAttribute('onclick').match(/'(\w+)'/)[1];
+    document.getElementById('tab-' + name).classList.add('active');
+  } else {
+    document.getElementById('tab-schedule').classList.add('active');
+    document.querySelectorAll('.tab')[0].classList.add('active');
+  }
+}
+
+// ═══ REST TIMER
+let timerInterval = null;
+let timerTotal = 60;
+let timerLeft = 60;
+let activeBtn = null;
+const CIRC = 2 * Math.PI * 18; // r=18
+
+function setPreset(sec, e) {
+  timerTotal = sec;
+  timerLeft = sec;
+  document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('selected'));
+  if (e && e.target) e.target.classList.add('selected');
+  updateTimerDisplay();
+  if (timerInterval) { clearInterval(timerInterval); runTimer(); }
+}
+
+function startRest(e, exId, exName, autoStarted) {
+  if (e && e.stopPropagation) e.stopPropagation();
+  if (activeBtn && activeBtn !== e?.target) activeBtn.classList.remove('active-timer');
+  if (!autoStarted && e?.target) { activeBtn = e.target; activeBtn.classList.add('active-timer'); }
+  timerExId = exId;
+  timerLeft = timerTotal;
+  document.getElementById('timerExName').textContent = exName || '—';
+  updateTimerSetInfo();
+  showTimerPill();
+  if (timerInterval) clearInterval(timerInterval);
+  runTimer();
+}
+
+function updateTimerSetInfo() {
+  const el = document.getElementById('timerSetInfo');
+  if (!timerExId || !exState[timerExId]) { el.textContent = ''; return; }
+  const s = exState[timerExId];
+  if (s.targetSets <= 0) { el.textContent = ''; return; }
+  if (s.isDone) {
+    el.textContent = '🎉 All sets complete!';
+  } else {
+    el.textContent = `Set ${s.completedSets} of ${s.targetSets} done · ${s.targetSets - s.completedSets} remaining`;
+  }
+}
+
+function runTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timerLeft--;
+    updateTimerDisplay();
+    if (timerLeft <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      if (activeBtn) { activeBtn.classList.remove('active-timer'); activeBtn = null; }
+      onTimerDone();
+    }
+  }, 1000);
+}
+
+function onTimerDone() {
+  if (navigator.vibrate) navigator.vibrate([200,100,200]);
+  const s = timerExId ? exState[timerExId] : null;
+  if (s && !s.isDone) {
+    showToast(`💪 Rest done! Ready for set ${s.completedSets + 1}`, 'success');
+  } else if (s && s.isDone) {
+    showToast('🎉 Exercise complete!', 'done-all');
+  } else {
+    showToast('✅ Rest done!', 'success');
+  }
+  document.getElementById('timerCount').textContent = '✓';
+  setTimeout(() => { if (!timerInterval) closeTimer(); }, 2500);
+}
+
+function updateTimerDisplay() {
+  const el = document.getElementById('timerCount');
+  const ring = document.getElementById('timerRing');
+  const mins = Math.floor(timerLeft / 60);
+  const secs = timerLeft % 60;
+  el.textContent = timerLeft >= 60 ? `${mins}:${secs.toString().padStart(2,'0')}` : timerLeft;
+  const urgent = timerLeft <= 10 && timerLeft > 0;
+  el.classList.toggle('urgent', urgent);
+  ring.classList.toggle('urgent', urgent);
+  const pct = timerLeft / timerTotal;
+  ring.style.strokeDashoffset = CIRC * (1 - pct);
+}
+
+function showTimerPill() { document.getElementById('timerPill').classList.add('visible'); }
+function closeTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  if (activeBtn) { activeBtn.classList.remove('active-timer'); activeBtn = null; }
+  document.getElementById('timerPill').classList.remove('visible');
+  timerExId = null;
+}
+
+// ═══ TOAST
+let toastTimer = null;
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.classList.remove('show'); }, 2800);
+}
+
+// ═══ INIT
+const ringEl = document.getElementById('timerRing');
+ringEl.style.strokeDasharray = CIRC;
+ringEl.style.strokeDashoffset = CIRC;
+document.getElementById('timerCount').textContent = '—';
+
+renderAll();
+</script>
+</body>
+</html>
