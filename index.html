@@ -22,25 +22,28 @@
   .header-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--cream);letter-spacing:.3px;}
   .header-subtitle{font-size:11px;color:var(--sage-light);margin-top:3px;font-weight:300;letter-spacing:1px;text-transform:uppercase;}
 
-  /* PROGRESS BAR */
-  .workout-progress{padding:10px 16px;background:var(--warm-white);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-  .progress-bar-wrap{flex:1;height:8px;background:var(--border);border-radius:50px;overflow:hidden;}
-  .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--sage),var(--sage-light));border-radius:50px;transition:width .4s ease;}
-  .progress-label{font-size:11px;color:var(--text-light);white-space:nowrap;font-weight:500;}
-  .reset-btn{font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:50px;background:var(--cream);color:var(--text-light);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
-  .reset-btn:hover{border-color:var(--red);color:var(--red);}
-
-  .search-bar{padding:12px 16px;background:var(--warm-white);border-bottom:1px solid var(--border);position:sticky;top:102px;z-index:99;}
+  /* SEARCH BAR */
+  .search-bar{padding:12px 16px;background:var(--warm-white);border-bottom:1px solid var(--border);position:sticky;top:62px;z-index:100;transition:max-height .3s ease,padding .3s ease,opacity .3s ease;max-height:60px;overflow:hidden;opacity:1;}
+  .search-bar.collapsed{max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-bottom:none;}
   .search-input{width:100%;padding:10px 14px 10px 36px;border:1.5px solid var(--border);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--cream);color:var(--text);outline:none;transition:border-color .2s;}
   .search-input:focus{border-color:var(--sage);}
   .search-wrap{position:relative;}
   .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:14px;}
 
-  .tabs{display:flex;overflow-x:auto;background:var(--warm-white);border-bottom:2px solid var(--border);padding:0 8px;scrollbar-width:none;position:sticky;top:152px;z-index:98;}
+  .tabs{display:flex;overflow-x:auto;background:var(--warm-white);border-bottom:2px solid var(--border);padding:0 8px;scrollbar-width:none;position:sticky;top:122px;z-index:99;transition:top .3s ease;}
+  .tabs.search-hidden{top:62px;}
   .tabs::-webkit-scrollbar{display:none;}
   .tab{flex-shrink:0;padding:12px 14px;font-size:12px;font-weight:500;color:var(--text-light);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;}
   .tab.active{color:var(--navy);border-bottom-color:var(--sage);font-weight:600;}
   .tab:hover:not(.active){color:var(--navy-mid);}
+
+  /* PROGRESS BAR */
+  .workout-progress{padding:8px 16px;background:var(--warm-white);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;position:sticky;z-index:98;transition:top .3s ease;}
+  .progress-bar-wrap{flex:1;height:8px;background:var(--border);border-radius:50px;overflow:hidden;}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--sage),var(--sage-light));border-radius:50px;transition:width .4s ease;}
+  .progress-label{font-size:11px;color:var(--text-light);white-space:nowrap;font-weight:500;}
+  .reset-btn{font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:50px;background:var(--cream);color:var(--text-light);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+  .reset-btn:hover{border-color:var(--red);color:var(--red);}
 
   .content{padding:16px;max-width:900px;margin:0 auto;}
   .section{display:none;animation:fadeIn .3s ease;}
@@ -233,14 +236,7 @@
   <div class="header-subtitle">16–20 Weeks · Modified as needed</div>
 </div>
 
-<!-- PROGRESS BAR -->
-<div class="workout-progress">
-  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
-  <div class="progress-label" id="progressLabel">0 / 0 exercises</div>
-  <button class="reset-btn" onclick="resetWorkout()">↺ Reset</button>
-</div>
-
-<div class="search-bar">
+<div class="search-bar" id="searchBar">
   <div class="search-wrap">
     <span class="search-icon">🔍</span>
     <input class="search-input" type="text" placeholder="Search exercises, muscles, bands..." id="searchInput" oninput="doSearch()">
@@ -248,6 +244,21 @@
 </div>
 
 <div class="tabs" id="tabBar">
+  <div class="tab active" onclick="showTab('schedule',this)">📅 Schedule</div>
+  <div class="tab" onclick="showTab('session1',this)">💪 Core & Glutes</div>
+  <div class="tab" onclick="showTab('session2',this)">🏋️ Upper Body</div>
+  <div class="tab" onclick="showTab('session3',this)">🧘 Yoga/Barre</div>
+  <div class="tab" onclick="showTab('bands',this)">🎽 Bands</div>
+  <div class="tab" onclick="showTab('rules',this)">📋 Rules</div>
+  <div class="tab" onclick="showTab('muscles',this)">💪 Muscles</div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="workout-progress" id="progressBar">
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="progress-label" id="progressLabel">0 / 0 exercises</div>
+  <button class="reset-btn" onclick="resetWorkout()">↺ Reset</button>
+</div>
   <div class="tab active" onclick="showTab('schedule',this)">📅 Schedule</div>
   <div class="tab" onclick="showTab('session1',this)">💪 Core & Glutes</div>
   <div class="tab" onclick="showTab('session2',this)">🏋️ Upper Body</div>
@@ -920,6 +931,44 @@ function showToast(msg, type) {
   toastTimer = setTimeout(() => { t.classList.remove('show'); }, 2800);
 }
 
+// ═══ SCROLL: collapse search, sticky progress under tabs
+const HEADER_H = 62; // header height
+let lastScrollY = 0;
+
+function updateStickyPositions(searchCollapsed) {
+  const header = document.querySelector('.header');
+  const searchBar = document.getElementById('searchBar');
+  const tabBar = document.getElementById('tabBar');
+  const progressBar = document.getElementById('progressBar');
+  if (!header || !searchBar || !tabBar || !progressBar) return;
+
+  const headerH = header.offsetHeight;
+  const searchH = searchCollapsed ? 0 : searchBar.offsetHeight;
+  const tabH = tabBar.offsetHeight;
+
+  searchBar.style.top = headerH + 'px';
+  tabBar.style.top = (headerH + searchH) + 'px';
+  progressBar.style.top = (headerH + searchH + tabH) + 'px';
+}
+
+window.addEventListener('scroll', () => {
+  const searchBar = document.getElementById('searchBar');
+  const tabBar = document.getElementById('tabBar');
+  const scrollY = window.scrollY;
+  const goingDown = scrollY > lastScrollY;
+  lastScrollY = scrollY;
+
+  if (goingDown && scrollY > 40) {
+    searchBar.classList.add('collapsed');
+    tabBar.classList.add('search-hidden');
+    updateStickyPositions(true);
+  } else if (!goingDown) {
+    searchBar.classList.remove('collapsed');
+    tabBar.classList.remove('search-hidden');
+    updateStickyPositions(false);
+  }
+}, { passive: true });
+
 // ═══ INIT
 const ringEl = document.getElementById('timerRing');
 ringEl.style.strokeDasharray = CIRC;
@@ -927,6 +976,7 @@ ringEl.style.strokeDashoffset = CIRC;
 document.getElementById('timerCount').textContent = '—';
 
 renderAll();
+updateStickyPositions(false);
 </script>
 </body>
 </html>
