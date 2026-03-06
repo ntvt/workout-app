@@ -230,7 +230,7 @@
 
 <div class="header">
   <div class="header-title">🤰 Pregnancy Workout Plan</div>
-  <div class="header-subtitle">16+ Weeks · Transfer 11/25/2025 · Embryo 5AB</div>
+  <div class="header-subtitle">16–20 Weeks · Modified as needed</div>
 </div>
 
 <!-- PROGRESS BAR -->
@@ -631,9 +631,12 @@ function checkCardDone(card) {
 }
 
 function updateProgress() {
-  const all = Object.values(exState);
-  const total = all.length;
-  const done = all.filter(s => s.isDone).length;
+  // Only count exercises visible in the currently active tab
+  const activeSection = document.querySelector('.section.active');
+  if (!activeSection) return;
+  const rows = activeSection.querySelectorAll('.ex-row[id]');
+  const total = rows.length;
+  const done = Array.from(rows).filter(r => exState[r.id]?.isDone).length;
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressLabel').textContent = `${done} / ${total} exercises`;
@@ -785,6 +788,7 @@ function showTab(name, el) {
   el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
   document.getElementById('searchInput').value = '';
   clearSearch();
+  updateProgress();
 }
 
 // ═══ SEARCH
